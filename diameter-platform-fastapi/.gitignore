@@ -1,0 +1,17 @@
+# Go
+/bin/
+/vendor/
+*.exe
+*.log
+
+# Python
+__pycache__/
+*.pyc
+.env
+
+# Docker
+docker-compose.override.yml
+
+# IDEs
+.vscode/
+.idea/

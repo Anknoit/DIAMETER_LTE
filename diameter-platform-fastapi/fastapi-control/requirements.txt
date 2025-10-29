@@ -1,0 +1,10 @@
+fastapi
+uvicorn[standard]
+httpx
+pydantic
+python-jose
+passlib[bcrypt]
+aioredis
+asyncpg
+prometheus-client
+python-multipart
