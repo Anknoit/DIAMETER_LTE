@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Certificates — Diameter Control{% endblock %}
+{% block header %}Certificates & Onboarding{% endblock %}
+
+{% block content %}
+<div class="panel">
+  <div class="panel-header">Upload CA / Peer cert</div>
+  <form id="certForm" class="form">
+    <label>PEM (CA or client cert)
+      <textarea name="pem" rows="8" placeholder="-----BEGIN CERTIFICATE-----"></textarea>
+    </label>
+    <label>Map to Origin-Host (optional)
+      <input name="origin_host" placeholder="peer.example.net">
+    </label>
+    <div class="form-actions">
+      <button class="btn primary" type="submit">Upload</button>
+    </div>
+  </form>
+</div>
+
+<script>
+document.getElementById('certForm').addEventListener('submit', async (ev) => {
+  ev.preventDefault();
+  const fd = new FormData(ev.target);
+  const body = { pem: fd.get('pem'), origin_host: fd.get('origin_host') };
+  const res = await apiPost('/api/v1/certs', body);
+  alert('Uploaded: ' + JSON.stringify(res));
+});
+</script>
+{% endblock %}

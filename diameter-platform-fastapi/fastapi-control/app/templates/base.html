@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>{% block title %}Diameter Control{% endblock %}</title>
+
+  <!-- Basic Material-like styles -->
+  <link rel="stylesheet" href="{{ url_for('static', path='css/styles.css') }}">
+  <script defer src="{{ url_for('static', path='js/app.js') }}"></script>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="side-nav" id="sideNav">
+      <div class="brand">
+        <div class="brand-logo">◐</div>
+        <div class="brand-name">Diameter</div>
+      </div>
+      <nav class="nav-list" role="navigation" aria-label="Main navigation">
+        <a href="{{ url_for('dashboard') }}" class="nav-item">Dashboard</a>
+        <a href="{{ url_for('peers') }}" class="nav-item">Peers</a>
+        <a href="{{ url_for('sessions') }}" class="nav-item">Sessions</a>
+        <a href="{{ url_for('messages') }}" class="nav-item">Messages</a>
+        <a href="{{ url_for('simulate') }}" class="nav-item">Simulator</a>
+        <a href="{{ url_for('certs') }}" class="nav-item">Certificates</a>
+      </nav>
+      <div class="side-footer">
+        <button id="toggleTheme" class="btn-ghost">Toggle theme</button>
+      </div>
+    </aside>
+
+    <div class="main">
+      <header class="topbar">
+        <button class="hamburger" id="hamburger" aria-label="Toggle navigation">☰</button>
+        <div class="topbar-left">
+          <h1 class="topbar-title">{% block header %}Control Panel{% endblock %}</h1>
+        </div>
+        <div class="topbar-right">
+          <div class="search-box">
+            <input id="globalSearch" placeholder="Search sessions, peers, messages..." />
+          </div>
+          <div class="user-menu">
+            <button id="userBtn" class="avatar">AJ</button>
+          </div>
+        </div>
+      </header>
+
+      <main class="content" role="main">
+        {% block content %}
+        <!-- page content -->
+        {% endblock %}
+      </main>
+
+      <footer class="footer">
+        <div>© {{ now().year }} Diameter Platform</div>
+        <div class="footer-right">v1.0 • <a href="#">Docs</a></div>
+      </footer>
+    </div>
+  </div>
+
+  <!-- basic modal container -->
+  <div id="modalRoot" class="modal-root" aria-hidden="true"></div>
+</body>
+</html>

@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}Simulator — Diameter Control{% endblock %}
+{% block header %}Simulator{% endblock %}
+
+{% block content %}
+<form id="simForm" class="panel form">
+  <label>Type
+    <select name="type" required>
+      <option>ACR</option><option>CCR</option><option>AAR</option><option>CER</option>
+    </select>
+  </label>
+  <label>Subtype<input name="subtype" placeholder="Start/Stop/UPDATE"></label>
+  <label>Session Id<input name="session_id" placeholder="auto-generated"></label>
+  <label>User<input name="user" placeholder="user@example.com or E.164"></label>
+  <label>Peer
+    <select name="peer_id" id="peerSelect"><option value="">(select)</option></select>
+  </label>
+  <label>AVPs (JSON)
+    <textarea name="avps" rows="6" placeholder='{"NAS-IP-Address":"1.2.3.4"}'></textarea>
+  </label>
+
+  <div class="form-actions">
+    <button class="btn primary" type="submit">Send</button>
+    <button class="btn-ghost" type="button" id="simClear">Clear</button>
+  </div>
+</form>
+
+<div class="panel">
+  <div class="panel-header">Response</div>
+  <pre id="simResult">{ }</pre>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', async () => {
+  // populate peers select
+  const peers = await apiGet('/api/v1/peers');
+  const sel = document.getElementById('peerSelect');
+  peers.forEach(p => sel.appendChild(Object.assign(document.createElement('option'), { value: p.id, textContent: p.id + ' — ' + p.host })));
+});
+
+document.getElementById('simForm').addEventListener('submit', async (ev) => {
+  ev.preventDefault();
+  const fd = new FormData(ev.target);
+  const body = {
+    type: fd.get('type'),
+    subtype: fd.get('subtype'),
+    session_id: fd.get('session_id') || `demo-${Date.now()}`,
+    user: fd.get('user'),
+    peer_id: fd.get('peer_id'),
+    avps: {}
+  };
+  try {
+    const avpsText = fd.get('avps').trim();
+    if (avpsText) body.avps = JSON.parse(avpsText);
+  } catch(e){ alert('AVPs must be valid JSON'); return; }
+
+  const res = await apiPost('/api/v1/simulate', body);
+  document.getElementById('simResult').textContent = JSON.stringify(res, null, 2);
+});
+</script>
+{% endblock %}

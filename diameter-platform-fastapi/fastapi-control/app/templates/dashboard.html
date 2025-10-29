@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — Diameter Control{% endblock %}
+{% block header %}Dashboard{% endblock %}
+
+{% block content %}
+<section class="grid grid-3">
+  <div class="card">
+    <div class="card-title">Peers</div>
+    <div class="card-value" id="cardPeers">—</div>
+    <div class="card-meta">Up / Total</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Active Sessions</div>
+    <div class="card-value" id="cardSessions">—</div>
+    <div class="card-meta">Live connections</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Messages/sec</div>
+    <div class="card-value" id="cardMsgs">—</div>
+    <div class="card-meta">1m avg</div>
+  </div>
+</section>
+
+<section class="panel">
+  <div class="panel-header">Recent events</div>
+  <div id="recentEvents" class="list"></div>
+</section>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  fetchMetrics();
+});
+
+async function fetchMetrics() {
+  try {
+    const r = await apiGet('/api/v1/status');
+    // expected { peers_up:1, peers_total:1, sessions:2, msgs_per_sec:3.2 }
+    document.getElementById('cardPeers').textContent = `${r.peers_up || 0} / ${r.peers_total || 0}`;
+    document.getElementById('cardSessions').textContent = r.sessions || 0;
+    document.getElementById('cardMsgs').textContent = r.msgs_per_sec || '0.0';
+    // recent events
+    const events = r.recent || [];
+    const el = document.getElementById('recentEvents');
+    el.innerHTML = events.map(e => `<div class="list-row">${e}</div>`).join('');
+  } catch(e){ console.warn(e); }
+}
+</script>
+{% endblock %}

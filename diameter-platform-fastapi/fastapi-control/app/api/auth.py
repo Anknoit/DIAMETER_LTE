@@ -9,7 +9,7 @@ router = APIRouter()
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/token")
 
 # demo user store - replace with DB
-USERS = {"admin": {"username": "admin", "password_hash": bcrypt.hash("changeme"), "role": "admin"}}
+USERS = {"admin": {"username": "admin", "password_hash": bcrypt.hash("admin"), "role": "admin"}}
 SECRET_KEY = "replace-with-secure-secret"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60

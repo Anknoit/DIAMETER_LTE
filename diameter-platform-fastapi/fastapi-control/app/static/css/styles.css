@@ -1,0 +1,59 @@
+:root{
+  --bg:#f5f7fb; --card:#fff; --muted:#6b7280; --accent:#1a73e8;
+  --surface-shadow: 0 1px 3px rgba(16,24,40,0.06), 0 1px 2px rgba(16,24,40,0.04);
+  --radius:12px;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  color-scheme: light;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);font-family:var(--font-family);color:#111}
+.app-shell{display:flex;min-height:100vh}
+.side-nav{width:250px;background:#fff;border-right:1px solid #eee;padding:20px;display:flex;flex-direction:column;gap:12px}
+.brand{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+.brand-logo{width:40px;height:40px;border-radius:8px;background:linear-gradient(135deg,var(--accent),#4ea1ff);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700}
+.brand-name{font-weight:600}
+.nav-list{display:flex;flex-direction:column;gap:6px;margin-top:8px}
+.nav-item{padding:10px 12px;border-radius:8px;color:#1f2937;text-decoration:none;display:block}
+.nav-item:hover{background:#f3f6fb}
+.side-footer{margin-top:auto}
+.main{flex:1;display:flex;flex-direction:column}
+.topbar{height:64px;background:linear-gradient(90deg,#fff,#fbfdff);display:flex;align-items:center;padding:0 18px;border-bottom:1px solid #eee;gap:16px}
+.hamburger{background:none;border:none;font-size:20px;cursor:pointer}
+.topbar-title{margin:0;font-size:18px}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:12px}
+.search-box input{padding:8px 12px;border-radius:20px;border:1px solid #e6edf3;width:260px}
+.avatar{width:36px;height:36px;border-radius:50%;background:#e8f0fe;border:none;display:flex;align-items:center;justify-content:center}
+.content{padding:20px;flex:1}
+.footer{height:56px;background:#fff;border-top:1px solid #eee;display:flex;align-items:center;justify-content:space-between;padding:0 18px}
+.grid{display:grid;gap:16px}
+.grid.grid-3{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.card{background:var(--card);padding:16px;border-radius:10px;box-shadow:var(--surface-shadow)}
+.card-title{font-size:13px;color:var(--muted);margin-bottom:8px}
+.card-value{font-weight:700;font-size:20px}
+.panel{background:var(--card);padding:12px;border-radius:10px;box-shadow:var(--surface-shadow);margin-top:16px}
+.panel-header{font-weight:600;margin-bottom:10px}
+.list{display:flex;flex-direction:column;gap:8px}
+.table{width:100%;border-collapse:collapse;background:transparent}
+.table thead th{background:transparent;text-align:left;padding:10px;color:var(--muted);font-size:13px;border-bottom:1px solid #eee}
+.table tbody td{padding:10px;border-bottom:1px solid #f3f6fa}
+.toolbar{display:flex;gap:8px;align-items:center;margin-bottom:12px}
+.btn{padding:8px 12px;border-radius:8px;border:none;background:#f3f6ff;color:var(--accent);cursor:pointer}
+.btn.primary{background:var(--accent);color:#fff;box-shadow:0 2px 6px rgba(26,115,232,0.12)}
+.btn.ghost, .btn-ghost{background:transparent;border:1px solid #e6edf3}
+.btn.tiny{padding:6px 8px;font-size:13px;border-radius:6px}
+.form label{display:block;margin-bottom:8px}
+.form input,.form textarea,.form select{width:100%;padding:10px;border-radius:8px;border:1px solid #e6edf3;background:#fff}
+.form-actions{display:flex;gap:8px;margin-top:10px}
+.login-card{width:360px;padding:20px;text-align:left}
+.centered{display:flex;align-items:center;justify-content:center;height:100vh}
+.msg-stream{display:flex;flex-direction:column;gap:6px;height:500px;overflow:auto;padding:10px;background:#fff;border-radius:8px}
+.msg-row{display:flex;gap:12px;align-items:flex-start;background:#fafbff;padding:8px;border-radius:8px}
+.msg-ts{font-size:12px;color:var(--muted);width:80px}
+.pre{white-space:pre-wrap}
+.modal-root{position:fixed;inset:0;display:none;align-items:center;justify-content:center}
+.modal-root[aria-hidden="false"]{display:flex}
+.modal{background:#fff;padding:16px;border-radius:10px;box-shadow:0 10px 30px rgba(16,24,40,0.2);min-width:320px}
+@media(max-width:900px){
+  .side-nav{display:none}
+  .hamburger{display:inline-block}
+}

@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% block title %}Peers — Diameter Control{% endblock %}
+{% block header %}Peers{% endblock %}
+
+{% block content %}
+<div class="toolbar">
+  <button class="btn primary" id="btnAddPeer">Add peer</button>
+  <input id="filterPeer" placeholder="Filter peers..." />
+</div>
+
+<table class="table" id="peersTable" aria-live="polite">
+  <thead>
+    <tr><th>ID</th><th>Host</th><th>IP</th><th>Realm</th><th>TLS</th><th>Status</th><th>Actions</th></tr>
+  </thead>
+  <tbody></tbody>
+</table>
+
+<!-- Add Peer modal template -->
+<template id="addPeerTpl">
+  <form id="addPeerForm" class="form">
+    <label>ID<input name="id" required></label>
+    <label>Host<input name="host" required></label>
+    <label>IP<input name="ip" required></label>
+    <label>Port<input name="port" type="number" value="3868" required></label>
+    <label>Realm<input name="realm"></label>
+    <label>TLS
+      <select name="tls"><option value="true">Yes</option><option value="false">No</option></select>
+    </label>
+    <label>CA cert (PEM)
+      <textarea name="ca_cert" rows="4" placeholder="-----BEGIN CERTIFICATE-----"></textarea>
+    </label>
+    <div class="form-actions">
+      <button type="submit" class="btn primary">Create</button>
+      <button type="button" class="btn-ghost" data-action="cancel">Cancel</button>
+    </div>
+  </form>
+</template>
+
+<script>
+async function refreshPeers() {
+  const tableBody = document.querySelector('#peersTable tbody');
+  tableBody.innerHTML = '<tr><td colspan="7">Loading…</td></tr>';
+  try {
+    const peers = await apiGet('/api/v1/peers');
+    if (!peers.length) {
+      tableBody.innerHTML = '<tr><td colspan="7">No peers configured</td></tr>';
+      return;
+    }
+    tableBody.innerHTML = peers.map(p => `
+      <tr>
+        <td>${p.id}</td>
+        <td>${p.host}</td>
+        <td>${p.ip}</td>
+        <td>${p.realm||''}</td>
+        <td>${p.tls? 'Yes':'No'}</td>
+        <td>${p.status||'unknown'}</td>
+        <td>
+          <button class="btn tiny" onclick="testHandshake('${p.id}')">Test</button>
+          <button class="btn ghost tiny" onclick="deletePeer('${p.id}')">Remove</button>
+        </td>
+      </tr>
+    `).join('');
+  } catch(e) {
+    tableBody.innerHTML = '<tr><td colspan="7">Error loading peers</td></tr>';
+    console.error(e);
+  }
+}
+
+async function testHandshake(peerId){
+  const res = await apiPost(`/api/v1/peers/${peerId}/test-handshake`, {});
+  showModal(`<pre>${JSON.stringify(res, null, 2)}</pre>`, 'Handshake result');
+}
+
+async function deletePeer(id){
+  if(!confirm('Delete peer '+id+'?')) return;
+  await apiDelete(`/api/v1/peers/${id}`);
+  refreshPeers();
+}
+
+document.getElementById('btnAddPeer').addEventListener('click', () => {
+  const tpl = document.getElementById('addPeerTpl').content.cloneNode(true);
+  showModal(tpl, 'Add Peer');
+  const form = document.getElementById('addPeerForm');
+  form.addEventListener('submit', async (ev) => {
+    ev.preventDefault();
+    const f = new FormData(form);
+    const body = Object.fromEntries(f.entries());
+    body.tls = body.tls === 'true';
+    await apiPost('/api/v1/peers', body);
+    closeModal();
+    refreshPeers();
+  });
+});
+
+document.addEventListener('DOMContentLoaded', refreshPeers);
+</script>
+{% endblock %}

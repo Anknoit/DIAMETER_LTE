@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}Sessions — Diameter Control{% endblock %}
+{% block header %}Sessions{% endblock %}
+
+{% block content %}
+<div class="toolbar">
+  <input id="sessionFilter" placeholder="Filter by user or session-id" />
+  <button class="btn" id="refreshSessions">Refresh</button>
+</div>
+
+<table class="table" id="sessionsTable">
+  <thead><tr><th>Session-Id</th><th>User</th><th>Peer</th><th>Start</th><th>Last</th><th>Bytes In/Out</th><th>Actions</th></tr></thead>
+  <tbody></tbody>
+</table>
+
+<script>
+async function loadSessions(){
+  const tb = document.querySelector('#sessionsTable tbody');
+  tb.innerHTML = '<tr><td colspan="7">Loading…</td></tr>';
+  const r = await apiGet('/api/v1/sessions');
+  // server should return { sessions: [ { session_id, user, peer, start, last, bytes_in, bytes_out } ] }
+  const rows = (r.sessions || []).map(s => `
+    <tr>
+      <td><a href="/sessions/${encodeURIComponent(s.session_id)}">${s.session_id}</a></td>
+      <td>${s.user||''}</td>
+      <td>${s.peer||''}</td>
+      <td>${s.start||''}</td>
+      <td>${s.last||''}</td>
+      <td>${s.bytes_in||0} / ${s.bytes_out||0}</td>
+      <td>
+        <button class="btn tiny" onclick="terminate('${s.session_id}')">Terminate</button>
+      </td>
+    </tr>
+  `).join('') || '<tr><td colspan="7">No sessions</td></tr>';
+  tb.innerHTML = rows;
+}
+
+async function terminate(id){
+  if(!confirm('Terminate session '+id+'?')) return;
+  await apiPost(`/api/v1/sessions/${encodeURIComponent(id)}/terminate`, {});
+  loadSessions();
+}
+
+document.getElementById('refreshSessions').addEventListener('click', loadSessions);
+document.addEventListener('DOMContentLoaded', loadSessions);
+</script>
+{% endblock %}

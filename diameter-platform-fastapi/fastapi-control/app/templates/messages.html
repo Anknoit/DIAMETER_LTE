@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Messages — Diameter Control{% endblock %}
+{% block header %}Messages{% endblock %}
+
+{% block content %}
+<div class="toolbar">
+  <input id="msgFilter" placeholder="Filter by command, peer, user, session-id" />
+  <button class="btn" id="clearMsgs">Clear</button>
+</div>
+
+<div id="msgStream" class="msg-stream"></div>
+
+<script>
+let socket;
+document.addEventListener('DOMContentLoaded', () => {
+  connectWS();
+});
+
+function connectWS(){
+  const token = localStorage.getItem('auth_token') || '';
+  const wsScheme = location.protocol === 'https:' ? 'wss' : 'ws';
+  socket = new WebSocket(`${wsScheme}://${location.host}/ws/messages?token=${token}`);
+  socket.onopen = () => addMsg({type:'system', text:'WebSocket connected'});
+  socket.onmessage = (ev) => {
+    try {
+      const payload = JSON.parse(ev.data);
+      addMsg(payload);
+    } catch(e){ addMsg({type:'raw', text:ev.data}); }
+  };
+  socket.onclose = () => addMsg({type:'system', text:'WS disconnected, retry in 3s'}), setTimeout(connectWS,3000);
+}
+
+function addMsg(obj){
+  const el = document.getElementById('msgStream');
+  const row = document.createElement('div');
+  row.className = 'msg-row';
+  row.innerHTML = `<div class="msg-ts">${new Date().toLocaleTimeString()}</div>
+                   <div class="msg-body"><pre>${JSON.stringify(obj, null, 2)}</pre></div>`;
+  el.prepend(row);
+  // limit length
+  while(el.children.length > 200) el.removeChild(el.lastChild);
+}
+</script>
+{% endblock %}
