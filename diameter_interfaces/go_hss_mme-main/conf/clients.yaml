@@ -1,0 +1,21 @@
+clients:
+  - idmmeidentity: 1
+    mmehost: "ola-mme-1"
+    mmerealm: "ola-mme-1"
+    UE_reachability: 1
+    IP: "127.0.0.1"
+  - idmmeidentity: 2
+    mmehost: "ola-mme-2"
+    mmerealm: "ola-mme-2"
+    UE_reachability: 0
+    IP: "127.0.0.1"
+  - idmmeidentity: 3
+    mmehost: "ola-mme-3"
+    mmerealm: "ola-mme-3"
+    UE_reachability: 1
+    IP: "127.0.0.1"
+  - idmmeidentity: 4
+    mmehost: "mme-host"
+    mmerealm: "mme-realm"
+    UE_reachability: 1
+    IP: "127.0.0.1"

@@ -1,0 +1,10 @@
+database:
+  user: root
+  password: root
+  host: 127.0.0.1
+  port: 3306
+  name: hss_db
+pool:
+  maxOpenConns: 100
+  maxIdleConns: 50
+  connMaxLifetime: 1800

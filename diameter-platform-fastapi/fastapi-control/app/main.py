@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from prometheus_client import start_http_server
 from api import health, peers, simulate, sessions, messages, auth
-from app.ui import routes as ui_routes
+from ui import routes as ui_routes
 import os
 
 app = FastAPI(title="Diameter Control API", version="1.0.0")
